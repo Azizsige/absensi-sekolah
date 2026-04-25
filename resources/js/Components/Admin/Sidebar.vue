@@ -13,25 +13,41 @@
             <h1 class="main-title ml-2 font-bold text-lg">Absensi Web</h1>
         </div>
 
-        <n-menu :options="menuOptions" />
+        <n-menu
+            :options="menuOptions"
+            :value="activeKey"
+            :default-expanded-keys="expandedKeys"
+            accordion
+        />
     </n-layout-sider>
 </template>
 
 <script setup>
-import { h } from "vue";
+import { h, computed } from "vue";
 import { NIcon } from "naive-ui";
-// Kita pakai Lucide Icon yang udah diinstall sebelumnya
-import { LayoutDashboard, Users, UserCheck } from "lucide-vue-next";
+// 1. Kita import tambahan icon buat sub-menu (Book, User, Shield, dll)
+import {
+    LayoutDashboard,
+    Users,
+    UserCheck,
+    BookOpen,
+    UserSquare,
+    ShieldCheck,
+    CalendarClock,
+    ClipboardCheck,
+} from "lucide-vue-next";
+import { Link, usePage } from "@inertiajs/vue3";
 
-// Fungsi pembantu buat render icon
-const renderIcon = (icon) => {
-    return () => h(NIcon, null, { default: () => h(icon) });
-};
+const page = usePage();
 
-// Menu Navigasi Admin
+const renderIcon = (icon) => () => h(NIcon, null, { default: () => h(icon) });
+const renderInertiaLink = (text, url) => () =>
+    h(Link, { href: url }, { default: () => text });
+
+// 2. Kita pasang property 'icon' di dalam children
 const menuOptions = [
     {
-        label: "Dashboard",
+        label: renderInertiaLink("Dashboard", "/"),
         key: "dashboard",
         icon: renderIcon(LayoutDashboard),
     },
@@ -40,9 +56,21 @@ const menuOptions = [
         key: "master",
         icon: renderIcon(Users),
         children: [
-            { label: "Kelas & Jurusan", key: "kelas" },
-            { label: "Data Siswa", key: "siswa" },
-            { label: "Admin & Guru", key: "admin" },
+            {
+                label: "Kelas & Jurusan",
+                key: "kelas",
+                icon: renderIcon(BookOpen), // Icon Kelas
+            },
+            {
+                label: renderInertiaLink("Data Siswa", "/admin/students"),
+                key: "students",
+                icon: renderIcon(UserSquare), // Icon Siswa
+            },
+            {
+                label: "Admin & Guru",
+                key: "admin",
+                icon: renderIcon(ShieldCheck), // Icon Admin
+            },
         ],
     },
     {
@@ -50,14 +78,34 @@ const menuOptions = [
         key: "operasional",
         icon: renderIcon(UserCheck),
         children: [
-            { label: "Log Harian", key: "log" },
-            { label: "Approval Izin", key: "approval" },
+            {
+                label: "Log Harian",
+                key: "log",
+                icon: renderIcon(CalendarClock), // Icon Log
+            },
+            {
+                label: "Approval Izin",
+                key: "approval",
+                icon: renderIcon(ClipboardCheck), // Icon Izin
+            },
         ],
     },
 ];
+
+const activeKey = computed(() => {
+    if (page.url.startsWith("/admin/students")) return "students";
+    if (page.url === "/") return "dashboard";
+    return null;
+});
+
+const expandedKeys = computed(() => {
+    if (page.url.startsWith("/admin/")) return ["master"];
+    return [];
+});
 </script>
 
 <style lang="scss">
+/* Style masih sama kayak sebelumnya */
 .sidebar-container {
     background-color: transparent;
     height: 100vh;
