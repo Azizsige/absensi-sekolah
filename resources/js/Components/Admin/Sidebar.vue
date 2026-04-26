@@ -85,7 +85,10 @@ const menuOptions = [
                 icon: renderIcon(CalendarClock),
             },
             {
-                label: "Approval Izin",
+                label: renderInertiaLink(
+                    "Approval Izin",
+                    "/admin/leave-requests",
+                ), // <-- UPDATE INI
                 key: "approval",
                 icon: renderIcon(ClipboardCheck),
             },
@@ -95,7 +98,8 @@ const menuOptions = [
 
 const activeKey = computed(() => {
     if (page.url.startsWith("/admin/students")) return "students";
-    if (page.url.startsWith("/admin/attendances")) return "log"; // <-- TAMBAHIN BARIS INI
+    if (page.url.startsWith("/admin/attendances")) return "log";
+    if (page.url.startsWith("/admin/leave-requests")) return "approval"; // <-- TAMBAHIN INI
     if (page.url === "/") return "dashboard";
     return null;
 });
