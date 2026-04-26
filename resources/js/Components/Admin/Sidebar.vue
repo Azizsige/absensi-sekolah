@@ -78,15 +78,16 @@ const menuOptions = [
         key: "operasional",
         icon: renderIcon(UserCheck),
         children: [
+            // UBAH BARIS INI: Panggil fungsi renderInertiaLink
             {
-                label: "Log Harian",
+                label: renderInertiaLink("Log Harian", "/admin/attendances"),
                 key: "log",
-                icon: renderIcon(CalendarClock), // Icon Log
+                icon: renderIcon(CalendarClock),
             },
             {
                 label: "Approval Izin",
                 key: "approval",
-                icon: renderIcon(ClipboardCheck), // Icon Izin
+                icon: renderIcon(ClipboardCheck),
             },
         ],
     },
@@ -94,6 +95,7 @@ const menuOptions = [
 
 const activeKey = computed(() => {
     if (page.url.startsWith("/admin/students")) return "students";
+    if (page.url.startsWith("/admin/attendances")) return "log"; // <-- TAMBAHIN BARIS INI
     if (page.url === "/") return "dashboard";
     return null;
 });
